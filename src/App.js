@@ -4,7 +4,6 @@ import {useState} from "react";
 function App() {
   const [calc, setCalc] = useState("");
   const [result, setResult] = useState("");
-  const basicOps = ["/","*","+","-","."];
 
   const updateCalc = value => {
     setCalc(calc + value);
@@ -22,24 +21,41 @@ function App() {
     return digits;
   }
 
+  const calculate = () => {
+    const val = Function(`"use strict";return (${calc})`)();
+    setCalc(val);
+    setResult(val);
+  }
+
+  const deleteLast = () =>{
+    if(calc === ''){
+      return;
+    }
+
+    const value = calc.slice(0, -1);
+    setCalc(value);
+  }
+
+
   return (
     <div className="App">
       <div className={"calculator"}>
         <div className={"display"}>
-          {result ? <span>(0)</span>: '' } {calc || "0"}
+          {result ? <span>({result})</span>: '' } {calc || "0"}
         </div>
         <div className={"operators"}>
-          <button onClick={() => updateCalc("/")}>+</button>
+          <button onClick={() => updateCalc("+")}>+</button>
           <button onClick={() => updateCalc("-")}>-</button>
           <button onClick={() => updateCalc("*")}>*</button>
           <button onClick={() => updateCalc("/")}>/</button>
-          <button onClick={() => {}}>DEL</button>
+          <button onClick={() => {updateCalc(result)}}>ANS</button>
+          <button onClick={() => {deleteLast()}}>DEL</button>
         </div>
         <div className={"digits"}>
           {createDigits()}
-          <button>0</button>
-          <button>.</button>
-          <button>=</button>
+          <button onClick={() => updateCalc("0")}>0</button>
+          <button onClick={() => updateCalc(".")}>.</button>
+          <button onClick={() => calculate()}>=</button>
         </div>
       </div>
 
